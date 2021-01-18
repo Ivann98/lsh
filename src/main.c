@@ -8,6 +8,7 @@
 
   @brief        LSH (Libstephen SHell)
 
+  @editor       Ivan Culjak
 *******************************************************************************/
 
 #include <sys/wait.h>
@@ -23,6 +24,8 @@
 int lsh_cd(char **args);
 int lsh_help(char **args);
 int lsh_exit(char **args);
+int lsh_pwd();
+int lsh_clear();
 
 /*
   List of builtin commands, followed by their corresponding functions.
@@ -30,13 +33,17 @@ int lsh_exit(char **args);
 char *builtin_str[] = {
   "cd",
   "help",
-  "exit"
+  "exit", 
+  "pwd", 
+  "clear"  
 };
 
 int (*builtin_func[]) (char **) = {
   &lsh_cd,
   &lsh_help,
-  &lsh_exit
+  &lsh_exit,
+  &lsh_pwd,
+  &lsh_clear
 };
 
 int lsh_num_builtins() {
@@ -93,7 +100,25 @@ int lsh_exit(char **args)
 {
   return 0;
 }
+/* Moj kod */
 
+int lsh_pwd()
+{
+	char cwd[1024];
+	if (getcwd(cwd, sizeof(cwd)) != NULL){
+		printf("%s\n", cwd);
+	} else {
+		perror("lsh");
+	}
+	return 1;
+}
+
+int lsh_clear()
+{
+	system("@cls||clear");
+	return 1;
+}
+	
 /**
   @brief Launch a program and wait for it to terminate.
   @param args Null terminated list of arguments (including program).
